@@ -11,10 +11,15 @@ class LikeableServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        $this->loadMigrationsFrom(__DIR__ . '/../migrations');
+        $migration = '2023_03_20_000000_create_likeable_table.php';
+        $this->publishes([
+            __DIR__ . '/../config/likeable.php'      => config_path('likeable.php'),
+            __DIR__ . '/../migrations/' . $migration => database_path('migrations/' . $migration),
+        ]);
     }
 
     public function register()
     {
+        $this->mergeConfigFrom(__DIR__ . '/../config/likeable.php', 'likeable');
     }
 }

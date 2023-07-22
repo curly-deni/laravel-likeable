@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 class Like extends Eloquent
 {
-    protected $table = 'likes';
     public $timestamps = true;
     protected $fillable = ['likeable_id', 'likeable_type', 'user_id'];
 
@@ -16,5 +15,10 @@ class Like extends Eloquent
     public function likeable()
     {
         return $this->morphTo();
+    }
+
+    public function getTable()
+    {
+        return config('likeable.tables.likes', 'likes');
     }
 }

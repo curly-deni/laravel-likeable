@@ -7,15 +7,21 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
-        Schema::create('likes', function (Blueprint $table) {
+        Schema::create(config('likeable.tables.likes', 'likes'), function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->uuidMorphs('likeable');
-            $table->unsignedBigInteger('user_id');
+
+            if (!config('likeable.tables.user_id_uuid', false)) {
+                $table->unsignedBigInteger('user_id');
+            } else {
+                $table->uuid('user_id');
+            }
+
             $table->timestamps();
             $table->unique(['likeable_id', 'likeable_type', 'user_id'], 'likes_unique');
         });
 
-        Schema::create('like_history', function (Blueprint $table) {
+        Schema::create(config('likeable.tables.count', 'likes_count'), function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->uuidMorphs('likeable');
             $table->unsignedBigInteger('count')->default(0);
@@ -25,7 +31,7 @@ return new class extends Migration {
 
     public function down()
     {
-        Schema::drop('likes');
-        Schema::drop('like_history');
+        Schema::drop(config('likeable.tables.likes', 'likes'));
+        Schema::drop(config('likeable.tables.count', 'likes_count'));
     }
 };

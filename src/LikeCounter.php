@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 class LikeCounter extends Eloquent
 {
-    protected $table = 'like_history';
     public $timestamps = false;
     protected $fillable = ['likeable_id', 'likeable_type', 'count'];
 
@@ -41,5 +40,10 @@ class LikeCounter extends Eloquent
         $inserts = $results->toArray();
 
         DB::table((new static)->table)->insert($inserts);
+    }
+
+    public function getTable()
+    {
+        return config('likeable.tables.count', 'likes_count');
     }
 }
