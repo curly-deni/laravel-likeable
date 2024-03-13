@@ -11,10 +11,14 @@ return new class extends Migration {
             $table->bigIncrements('id');
             $table->uuidMorphs('likeable');
 
-            if (!config('likeable.tables.user_id_uuid', false)) {
-                $table->unsignedBigInteger('user_id');
-            } else {
+            $userIdType = config('likeable.tables.user_id_type', 'id');
+
+            if ($userIdType == 'ulid') {
+                $table->ulid('user_id');
+            } elseif ($userIdType == 'uuid') {
                 $table->uuid('user_id');
+            } else {
+                $table->unsignedBigInteger('user_id');
             }
 
             $table->timestamps();
