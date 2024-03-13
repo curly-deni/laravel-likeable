@@ -7,11 +7,21 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
-        Schema::create(config('likeable.tables.likes', 'likes'), function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->uuidMorphs('likeable');
-
+        $morphType = config('likeable.tables.morph_type', 'biginteger');
+        Schema::create(config('likeable.tables.likes', 'likes'), function (Blueprint $table) use ($morphType) {
             $userIdType = config('likeable.tables.user_id_type', 'id');
+
+            $table->bigIncrements('id');
+
+            if ($morphType == 'uuid') {
+                $table->uuidMorphs('likeable');
+            } elseif ($morphType == 'ulid') {
+                $table->ulidMorphs('likeable');
+            } elseif ($morphType == 'varchar') {
+                $table->morphs('likeable');
+            } else {
+                $table->numericMorphs('likeable');
+            }
 
             if ($userIdType == 'ulid') {
                 $table->ulid('user_id');
@@ -25,9 +35,17 @@ return new class extends Migration {
             $table->unique(['likeable_id', 'likeable_type', 'user_id'], 'likes_unique');
         });
 
-        Schema::create(config('likeable.tables.count', 'likes_count'), function (Blueprint $table) {
+        Schema::create(config('likeable.tables.count', 'likes_count'), function (Blueprint $table) use ($morphType) {
             $table->bigIncrements('id');
-            $table->uuidMorphs('likeable');
+            if ($morphType == 'uuid') {
+                $table->uuidMorphs('likeable');
+            } elseif ($morphType == 'ulid') {
+                $table->ulidMorphs('likeable');
+            } elseif ($morphType == 'varchar') {
+                $table->morphs('likeable');
+            } else {
+                $table->numericMorphs('likeable');
+            }
             $table->unsignedBigInteger('count')->default(0);
             $table->unique(['likeable_id', 'likeable_type'], 'like_history_unique');
         });
