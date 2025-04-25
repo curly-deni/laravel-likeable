@@ -1,15 +1,15 @@
 <?php
 
-namespace Zeroday\Likeable\Tests;
+namespace Aesis\Likeable\Tests;
 
-use Illuminate\Database\Eloquent\Model as Eloquent;
+use Aesis\Likeable\Models\Like;
+use Aesis\Likeable\Models\LikeCounter;
+use Aesis\Likeable\Traits\Likeable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Facades\Schema;
-use Zeroday\Likeable\Like;
-use Zeroday\Likeable\Likeable;
-use Zeroday\Likeable\LikeCounter;
 
-class CommonUseBaseTest extends BaseTestCase
+class CommonLikeUseTest extends BaseTestCase
 {
     public function setUp(): void
     {
@@ -32,12 +32,15 @@ class CommonUseBaseTest extends BaseTestCase
     public function tearDown(): void
     {
         Schema::drop('books');
+
+        restore_error_handler();
+        restore_exception_handler();
     }
 
     public function test_basic_like()
     {
-        /** @var Stub $stub */
-        $stub = Stub::create(['name' => 123]);
+        /** @var LikeStub $stub */
+        $stub = LikeStub::create(['name' => 123]);
 
         $stub->like();
 
@@ -46,7 +49,7 @@ class CommonUseBaseTest extends BaseTestCase
 
     public function test_multiple_likes()
     {
-        $stub = Stub::create(['name' => 123]);
+        $stub = LikeStub::create(['name' => 123]);
 
         $stub->like(1);
         $stub->like(2);
@@ -58,8 +61,8 @@ class CommonUseBaseTest extends BaseTestCase
 
     public function test_unlike()
     {
-        /** @var Stub $stub */
-        $stub = Stub::create(['name' => 123]);
+        /** @var LikeStub $stub */
+        $stub = LikeStub::create(['name' => 123]);
 
         $stub->unlike(1);
 
@@ -68,12 +71,12 @@ class CommonUseBaseTest extends BaseTestCase
 
     public function test_where_liked_by()
     {
-        Stub::create(['name' => 'A'])->like(1);
-        Stub::create(['name' => 'B'])->like(1);
-        Stub::create(['name' => 'C'])->like(1);
+        LikeStub::create(['name' => 'A'])->like(1);
+        LikeStub::create(['name' => 'B'])->like(1);
+        LikeStub::create(['name' => 'C'])->like(1);
 
-        $stubs = Stub::whereLikedBy(1)->get();
-        $shouldBeEmpty = Stub::whereLikedBy(2)->get();
+        $stubs = LikeStub::whereLikedBy(1)->get();
+        $shouldBeEmpty = LikeStub::whereLikedBy(2)->get();
 
         $this->assertEquals(3, $stubs->count());
         $this->assertEmpty($shouldBeEmpty);
@@ -81,12 +84,12 @@ class CommonUseBaseTest extends BaseTestCase
 
     public function test_deleteModel_deletesLikes()
     {
-        /** @var Stub $stub1 */
-        $stub1 = Stub::create(['name' => 456]);
-        /** @var Stub $stub2 */
-        $stub2 = Stub::create(['name' => 123]);
-        /** @var Stub $stub3 */
-        $stub3 = Stub::create(['name' => 888]);
+        /** @var LikeStub $stub1 */
+        $stub1 = LikeStub::create(['name' => 456]);
+        /** @var LikeStub $stub2 */
+        $stub2 = LikeStub::create(['name' => 123]);
+        /** @var LikeStub $stub3 */
+        $stub3 = LikeStub::create(['name' => 888]);
 
         $stub1->like(1);
         $stub1->like(7);
@@ -111,8 +114,8 @@ class CommonUseBaseTest extends BaseTestCase
 
     public function test_rebuild_test()
     {
-        $stub1 = Stub::create(['name' => 456]);
-        $stub2 = Stub::create(['name' => 123]);
+        $stub1 = LikeStub::create(['name' => 456]);
+        $stub2 = LikeStub::create(['name' => 123]);
 
         $stub1->like(1);
         $stub1->like(7);
@@ -124,7 +127,7 @@ class CommonUseBaseTest extends BaseTestCase
 
         LikeCounter::truncate();
 
-        LikeCounter::rebuild(Stub::class);
+        LikeCounter::rebuild(LikeStub::class);
 
         $this->assertEquals(2, LikeCounter::count());
     }
@@ -133,7 +136,7 @@ class CommonUseBaseTest extends BaseTestCase
 /**
  * @mixin Eloquent
  */
-class Stub extends Model
+class LikeStub extends Model
 {
     use Likeable;
 

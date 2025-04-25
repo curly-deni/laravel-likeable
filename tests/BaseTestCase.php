@@ -1,10 +1,10 @@
 <?php
 
-namespace Zeroday\Likeable\Tests;
+namespace Aesis\Likeable\Tests;
 
+use Aesis\Likeable\LikeableServiceProvider;
 use Illuminate\Foundation\Application;
 use Orchestra\Testbench\TestCase;
-use Zeroday\Likeable\LikeableServiceProvider;
 
 abstract class BaseTestCase extends TestCase
 {
@@ -16,8 +16,7 @@ abstract class BaseTestCase extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->artisan('migrate')->run();
+        $this->loadMigrationsFrom(realpath(__DIR__ . '/../migrations'));
     }
 
     /**
@@ -31,9 +30,9 @@ abstract class BaseTestCase extends TestCase
         // Setup default database to use sqlite :memory:
         $app['config']->set('database.default', 'sqlite');
         $app['config']->set('database.connections.sqlite', [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => '',
+            'prefix' => '',
         ]);
     }
 

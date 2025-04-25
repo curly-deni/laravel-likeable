@@ -1,6 +1,6 @@
 <?php
 
-namespace Zeroday\Likeable;
+namespace Aesis\Likeable\Models;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
@@ -19,6 +19,6 @@ class Like extends Eloquent
 
     public function getTable()
     {
-        return config('likeable.tables.likes', 'likes');
+        return config('likeable.tables.like.entity_table', 'likes');
     }
 }

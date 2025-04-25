@@ -1,11 +1,10 @@
 {
-  "name": "thezeroday/laravel-likeable",
+  "name": "curly-deni/laravel-likeable",
   "description": "Trait for Laravel Eloquent models to allow easy implementation of a 'like' or 'favorite' or 'remember' feature.",
   "type": "library",
   "keywords": [
     "trait",
     "laravel",
-    "laravel5",
     "eloquent",
     "likeable",
     "likable",
@@ -18,29 +17,34 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Zeroday\\Likeable\\": "src/"
+      "Aesis\\Likeable\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Zeroday\\Likeable\\Tests\\": "tests/"
+      "Aesis\\Likeable\\Tests\\": "tests/"
     }
   },
   "authors": [
     {
       "name": "0Day"
+    },
+    {
+      "name": "Danila Mikhalev",
+      "email": "danila@dan-mi.ru"
     }
   ],
   "require": {
     "php": "^8.2",
-    "illuminate/database": ">=10.0",
-    "illuminate/support": ">=10.0"
+    "illuminate/database": ">=12.0",
+    "illuminate/support": ">=12.0"
   },
   "require-dev": {
-    "orchestra/testbench": "^8.0",
-    "phpunit/phpunit": "^10.5",
+    "orchestra/testbench": "^10.0",
+    "phpunit/phpunit": "^12.0",
     "mockery/mockery": "^1.6",
-    "squizlabs/php_codesniffer": "^3.9"
+    "squizlabs/php_codesniffer": "^3.9",
+    "friendsofphp/php-cs-fixer": "^3.75"
   },
   "scripts": {
     "test": "vendor/bin/phpunit --color=always",
@@ -56,7 +60,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Zeroday\\Likeable\\LikeableServiceProvider"
+        "Aesis\\Likeable\\LikeableServiceProvider"
       ]
     }
   },

@@ -1,6 +1,6 @@
 <?php
 
-namespace Zeroday\Likeable;
+namespace Aesis\Likeable\Models;
 
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -36,14 +36,14 @@ class LikeCounter extends Eloquent
             ->groupBy('likeable_id');
 
         $results = $builder->get();
-
         $inserts = $results->toArray();
 
-        DB::table((new static)->table)->insert($inserts);
+        $tableName = (new static())->getTable();
+        DB::table($tableName)->insert($inserts);
     }
 
     public function getTable()
     {
-        return config('likeable.tables.count', 'likes_count');
+        return config('likeable.tables.like.count_table', 'likes_count');
     }
 }

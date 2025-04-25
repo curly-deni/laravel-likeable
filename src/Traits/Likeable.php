@@ -1,6 +1,9 @@
 <?php
 
-namespace Zeroday\Likeable;
+namespace Aesis\Likeable\Traits;
+
+use Aesis\Likeable\Models\Like;
+use Aesis\Likeable\Models\LikeCounter;
 
 trait Likeable
 {
@@ -29,7 +32,7 @@ trait Likeable
     public function like($userId = null)
     {
         if (is_null($userId)) {
-            $userId = $this->loggedInUserId();
+            $userId = auth()->id();
         }
 
         if ($userId) {
@@ -56,7 +59,7 @@ trait Likeable
     public function unlike($userId = null)
     {
         if (is_null($userId)) {
-            $userId = $this->loggedInUserId();
+            $userId = auth()->id();
         }
 
         if ($userId) {
@@ -83,7 +86,7 @@ trait Likeable
     public function liked($userId = null)
     {
         if (is_null($userId)) {
-            $userId = $this->loggedInUserId();
+            $userId = auth()->id();
         }
 
         return (bool)$this->likes()
@@ -153,7 +156,7 @@ trait Likeable
             $counter->count++;
             $counter->save();
         } else {
-            $counter = new LikeCounter;
+            $counter = new LikeCounter();
             $counter->count = 1;
             $this->likeCounter()->save($counter);
         }
@@ -185,20 +188,11 @@ trait Likeable
     public function scopeWhereLikedBy($query, $userId = null)
     {
         if (is_null($userId)) {
-            $userId = $this->loggedInUserId();
+            $userId = auth()->id();
         }
 
         return $query->whereHas('likes', function ($q) use ($userId) {
             $q->where('user_id', '=', $userId);
         });
-    }
-
-    /**
-     * Fetch the primary ID of the currently logged in user
-     * @return mixed
-     */
-    private function loggedInUserId()
-    {
-        return auth()->id();
     }
 }
